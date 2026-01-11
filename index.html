@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全能单位转换器</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .converter-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+
+        /* 标签页样式 */
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
+        .tab-btn {
+            background: none; border: none; padding: 10px 15px;
+            font-size: 16px; cursor: pointer; color: #888;
+            border-bottom: 3px solid transparent; transition: 0.3s;
+        }
+        .tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); font-weight: bold; }
+
+        /* 内容区域 */
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 5px; color: #555; font-weight: 500; }
+        input {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 18px; box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: var(--primary-color); outline: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="converter-card">
+    <h2>单位转换器</h2>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('length')">长度</button>
+        <button class="tab-btn" onclick="openTab('weight')">重量</button>
+        <button class="tab-btn" onclick="openTab('temp')">温度</button>
+    </div>
+
+    <div id="length" class="tab-content active">
+        <div class="input-group">
+            <label>厘米 (cm)</label>
+            <input type="number" id="cm" placeholder="输入厘米" oninput="convertLength('cm')">
+        </div>
+        <div class="input-group">
+            <label>英寸 (inch)</label>
+            <input type="number" id="inch" placeholder="输入英寸" oninput="convertLength('inch')">
+        </div>
+    </div>
+
+    <div id="weight" class="tab-content">
+        <div class="input-group">
+            <label>千克 (kg)</label>
+            <input type="number" id="kg" placeholder="输入千克" oninput="convertWeight('kg')">
+        </div>
+        <div class="input-group">
+            <label>磅 (lbs)</label>
+            <input type="number" id="lbs" placeholder="输入磅" oninput="convertWeight('lbs')">
+        </div>
+    </div>
+
+    <div id="temp" class="tab-content">
+        <div class="input-group">
+            <label>摄氏度 (°C)</label>
+            <input type="number" id="celsius" placeholder="输入°C" oninput="convertTemp('celsius')">
+        </div>
+        <div class="input-group">
+            <label>华氏度 (°F)</label>
+            <input type="number" id="fahrenheit" placeholder="输入°F" oninput="convertTemp('fahrenheit')">
+        </div>
+    </div>
+</div>
+
+<script>
+    // 切换标签页逻辑
+    function openTab(tabName) {
+        // 隐藏所有内容
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // 移除所有按钮激活状态
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // 激活当前选中的
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // 长度转换逻辑
+    function convertLength(source) {
+        let cm = document.getElementById('cm');
+        let inch = document.getElementById('inch');
+
+        if (source === 'cm') {
+            inch.value = (cm.value / 2.54).toFixed(2);
+        } else {
+            cm.value = (inch.value * 2.54).toFixed(2);
+        }
+        if(!cm.value && !inch.value) { cm.value=""; inch.value=""; } // 清空处理
+    }
+
+    // 重量转换逻辑
+    function convertWeight(source) {
+        let kg = document.getElementById('kg');
+        let lbs = document.getElementById('lbs');
+
+        if (source === 'kg') {
+            lbs.value = (kg.value * 2.20462).toFixed(2);
+        } else {
+            kg.value = (lbs.value / 2.20462).toFixed(2);
+        }
+        if(!kg.value && !lbs.value) { kg.value=""; lbs.value=""; }
+    }
+
+    // 温度转换逻辑
+    function convertTemp(source) {
+        let c = document.getElementById('celsius');
+        let f = document.getElementById('fahrenheit');
+
+        if (source === 'celsius') {
+            // (0°C × 9/5) + 32 = 32°F
+            f.value = ((c.value * 9/5) + 32).toFixed(2);
+        } else {
+            // (32°F − 32) × 5/9 = 0°C
+            c.value = ((f.value - 32) * 5/9).toFixed(2);
+        }
+        if(!c.value && !f.value) { c.value=""; f.value=""; }
+    }
+</script>
+
+</body>
+</html>
