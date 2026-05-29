@@ -3,160 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="RjF4OvvPwRDS-6qWgXiolwaLiYKHQDQvtJyLckU_RKM" />
-    <title>全能单位转换器</title>
+    <meta name="google-site-verification" content="RjF4OvvPwRDS-6qWgXiolwaLiYKHQDQvtJyLckU_RKM">
+    <meta name="description" content="在线 Unix timestamp converter，支持秒、毫秒、微秒、纳秒、ISO 日期、UTC 与多时区转换，并可一键复制结果。">
+    <title>Timestamp Converter | Unix 时间戳转换工具</title>
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
+            --bg: #f6f8fb;
+            --panel: #ffffff;
+            --text: #18202f;
+            --muted: #667085;
+            --line: #d9e0ea;
+            --primary: #2563eb;
+            --primary-dark: #1742a0;
+            --accent: #0f766e;
+            --warn: #b45309;
+            --shadow: 0 18px 45px rgba(20, 32, 54, 0.11);
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
+            min-height: 100vh;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 32%),
+                linear-gradient(315deg, rgba(15, 118, 110, 0.08), transparent 30%),
+                var(--bg);
         }
 
-        .converter-card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 400px;
+        main {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 36px 0 48px;
         }
 
-        h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
-
-        /* 标签页样式 */
-        .tabs { display: flex; justify-content: space-around; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
-        .tab-btn {
-            background: none; border: none; padding: 10px 15px;
-            font-size: 16px; cursor: pointer; color: #888;
-            border-bottom: 3px solid transparent; transition: 0.3s;
+        header {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 24px;
+            align-items: end;
+            margin-bottom: 22px;
         }
-        .tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); font-weight: bold; }
 
-        /* 内容区域 */
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 5px; color: #555; font-weight: 500; }
-        input {
-            width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 8px; font-size: 18px; box-sizing: border-box;
-            transition: border-color 0.3s;
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 1.05;
+            letter-spacing: 0;
         }
-        input:focus { border-color: var(--primary-color); outline: none; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .subtitle {
+            margin: 0;
+            max-width: 680px;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.65;
+        }
+
+        .now-box {
+            min-width: 280px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .now-value {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--shadow);
+        }
+
+        .panel-head {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .panel-body { padding: 20px; }
+
+        textarea, input, select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            font: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea {
+            min-height: 132px;
+            resize: vertical;
+            padding: 14px;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            line-height: 1.5;
+        }
+
+        input, select { padding: 12px 13px; }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.13);
+        }
+
+        .field { margin-bottom: 16px; }
+        .field:last-child { margin-bottom: 0; }
+
+        .hint {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        button {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+            min-height: 40px;
+            padding: 9px 13px;
+            transition: transform 0.15s, border-color 0.15s, background 0.15s;
+        }
+
+        button:hover { border-color: var(--primary); transform: translateY(-1px); }
+        button.primary { border-color: var(--primary); background: var(--primary); color: #fff; }
+        button.primary:hover { background: var(--primary-dark); }
+
+        .result-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .result-item {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .result-name {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .result-value {
+            overflow-wrap: anywhere;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .copy-btn {
+            min-width: 44px;
+            padding: 8px 10px;
+            color: var(--primary);
+        }
+
+        .status {
+            margin-top: 14px;
+            min-height: 22px;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .status.error { color: var(--warn); }
+
+        .quick-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-examples button {
+            min-height: 34px;
+            padding: 7px 10px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .faq {
+            margin-top: 18px;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.78);
+        }
+
+        .faq h2 { margin-bottom: 12px; }
+        .faq p { margin: 8px 0; color: var(--muted); line-height: 1.7; }
+        .faq strong { color: var(--text); }
+
+        @media (max-width: 860px) {
+            header, .grid { grid-template-columns: 1fr; }
+            .now-box { min-width: 0; }
+        }
+
+        @media (max-width: 620px) {
+            main { width: min(100% - 22px, 1120px); padding-top: 22px; }
+            .panel-body, .panel-head, .faq { padding: 16px; }
+            .row, .result-item { grid-template-columns: 1fr; }
+            .copy-btn { width: 100%; }
+            .now-value { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
+<main>
+    <header>
+        <div>
+            <h1>Timestamp Converter</h1>
+            <p class="subtitle">自动识别 Unix 秒、毫秒、微秒、纳秒和常见日期字符串，在 UTC、本地时间与指定时区之间快速转换。</p>
+        </div>
+        <section class="now-box" aria-label="Current Unix timestamp">
+            <span class="label">Current Unix Timestamp</span>
+            <div class="now-value">
+                <span id="liveTimestamp">-</span>
+                <button class="copy-btn" data-copy-target="liveTimestamp" title="复制当前时间戳">Copy</button>
+            </div>
+        </section>
+    </header>
 
-<div class="converter-card">
-    <h2>单位转换器</h2>
-    
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('length')">长度</button>
-        <button class="tab-btn" onclick="openTab('weight')">重量</button>
-        <button class="tab-btn" onclick="openTab('temp')">温度</button>
-    </div>
+    <section class="grid">
+        <div class="panel">
+            <div class="panel-head"><h2>输入</h2></div>
+            <div class="panel-body">
+                <div class="field">
+                    <label class="label" for="smartInput">Timestamp 或日期</label>
+                    <textarea id="smartInput" spellcheck="false" placeholder="例如：1713528896、1713528896000、2024-04-19T10:54:56Z"></textarea>
+                    <p class="hint">数字会按长度自动判断秒、毫秒、微秒或纳秒；日期字符串会按浏览器可解析格式处理。</p>
+                    <div class="quick-examples">
+                        <button type="button" data-example="1713528896">Unix seconds</button>
+                        <button type="button" data-example="1713528896000">Milliseconds</button>
+                        <button type="button" data-example="2024-04-19T10:54:56Z">ISO UTC</button>
+                    </div>
+                </div>
 
-    <div id="length" class="tab-content active">
-        <div class="input-group">
-            <label>厘米 (cm)</label>
-            <input type="number" id="cm" placeholder="输入厘米" oninput="convertLength('cm')">
-        </div>
-        <div class="input-group">
-            <label>英寸 (inch)</label>
-            <input type="number" id="inch" placeholder="输入英寸" oninput="convertLength('inch')">
-        </div>
-    </div>
+                <div class="field">
+                    <label class="label" for="dateInput">日期转 Timestamp</label>
+                    <input id="dateInput" type="datetime-local" step="1">
+                    <p class="hint">这里的日期会按下方选择的时区解释，再转换成 Unix timestamp。</p>
+                </div>
 
-    <div id="weight" class="tab-content">
-        <div class="input-group">
-            <label>千克 (kg)</label>
-            <input type="number" id="kg" placeholder="输入千克" oninput="convertWeight('kg')">
-        </div>
-        <div class="input-group">
-            <label>磅 (lbs)</label>
-            <input type="number" id="lbs" placeholder="输入磅" oninput="convertWeight('lbs')">
-        </div>
-    </div>
+                <div class="row">
+                    <div class="field">
+                        <label class="label" for="timezoneSelect">时区</label>
+                        <select id="timezoneSelect"></select>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="detectedType">识别结果</label>
+                        <input id="detectedType" type="text" readonly value="等待输入">
+                    </div>
+                </div>
 
-    <div id="temp" class="tab-content">
-        <div class="input-group">
-            <label>摄氏度 (°C)</label>
-            <input type="number" id="celsius" placeholder="输入°C" oninput="convertTemp('celsius')">
+                <div class="toolbar">
+                    <button class="primary" type="button" id="useNowBtn">使用当前时间</button>
+                    <button type="button" id="clearBtn">清空</button>
+                </div>
+                <div id="status" class="status" role="status"></div>
+            </div>
         </div>
-        <div class="input-group">
-            <label>华氏度 (°F)</label>
-            <input type="number" id="fahrenheit" placeholder="输入°F" oninput="convertTemp('fahrenheit')">
+
+        <div class="panel">
+            <div class="panel-head"><h2>转换结果</h2></div>
+            <div class="panel-body">
+                <div id="results" class="result-list"></div>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+
+    <section class="faq">
+        <h2>常见问题</h2>
+        <p><strong>10 位和 13 位 timestamp 有什么区别？</strong>10 位通常是 Unix 秒，13 位通常是 Unix 毫秒。</p>
+        <p><strong>为什么 UTC 和本地时间不同？</strong>Unix timestamp 本身不带时区，显示成日期时才会按照 UTC、本地或指定时区格式化。</p>
+        <p><strong>这个工具会上传我的输入吗？</strong>不会，转换逻辑全部在浏览器本地完成。</p>
+    </section>
+</main>
 
 <script>
-    // 切换标签页逻辑
-    function openTab(tabName) {
-        // 隐藏所有内容
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        // 移除所有按钮激活状态
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        
-        // 激活当前选中的
-        document.getElementById(tabName).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
+    const timezones = [
+        Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        'UTC',
+        'Asia/Shanghai',
+        'America/New_York',
+        'America/Los_Angeles',
+        'Europe/London',
+        'Europe/Paris',
+        'Asia/Tokyo',
+        'Asia/Singapore',
+        'Australia/Sydney'
+    ];
 
-    // 长度转换逻辑
-    function convertLength(source) {
-        let cm = document.getElementById('cm');
-        let inch = document.getElementById('inch');
+    const uniqueTimezones = [...new Set(timezones)];
+    const formatterCache = new Map();
+    const smartInput = document.getElementById('smartInput');
+    const dateInput = document.getElementById('dateInput');
+    const timezoneSelect = document.getElementById('timezoneSelect');
+    const detectedType = document.getElementById('detectedType');
+    const results = document.getElementById('results');
+    const statusEl = document.getElementById('status');
+    let activeDate = new Date();
+    let sourceLock = false;
 
-        if (source === 'cm') {
-            inch.value = (cm.value / 2.54).toFixed(2);
-        } else {
-            cm.value = (inch.value * 2.54).toFixed(2);
+    uniqueTimezones.forEach((tz) => {
+        const option = document.createElement('option');
+        option.value = tz;
+        option.textContent = tz;
+        timezoneSelect.appendChild(option);
+    });
+
+    function getFormatter(timeZone, options) {
+        const key = timeZone + JSON.stringify(options);
+        if (!formatterCache.has(key)) {
+            formatterCache.set(key, new Intl.DateTimeFormat('en-CA', { timeZone, ...options }));
         }
-        if(!cm.value && !inch.value) { cm.value=""; inch.value=""; } // 清空处理
+        return formatterCache.get(key);
     }
 
-    // 重量转换逻辑
-    function convertWeight(source) {
-        let kg = document.getElementById('kg');
-        let lbs = document.getElementById('lbs');
+    function formatInTimeZone(date, timeZone, options = {}) {
+        return getFormatter(timeZone, {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            ...options
+        }).format(date);
+    }
 
-        if (source === 'kg') {
-            lbs.value = (kg.value * 2.20462).toFixed(2);
-        } else {
-            kg.value = (lbs.value / 2.20462).toFixed(2);
+    function getTimeZoneParts(date, timeZone) {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).formatToParts(date);
+        return Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, Number(part.value)]));
+    }
+
+    function zonedDateToUtc(localValue, timeZone) {
+        const match = localValue.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+        if (!match) return null;
+        const values = {
+            year: Number(match[1]),
+            month: Number(match[2]),
+            day: Number(match[3]),
+            hour: Number(match[4]),
+            minute: Number(match[5]),
+            second: Number(match[6] || 0)
+        };
+        const targetUtc = Date.UTC(values.year, values.month - 1, values.day, values.hour, values.minute, values.second);
+        let utc = targetUtc;
+        for (let index = 0; index < 2; index += 1) {
+            const parts = getTimeZoneParts(new Date(utc), timeZone);
+            const displayedUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour === 24 ? 0 : parts.hour, parts.minute, parts.second);
+            utc -= displayedUtc - targetUtc;
         }
-        if(!kg.value && !lbs.value) { kg.value=""; lbs.value=""; }
+        return new Date(utc);
     }
 
-    // 温度转换逻辑
-    function convertTemp(source) {
-        let c = document.getElementById('celsius');
-        let f = document.getElementById('fahrenheit');
+    function toDatetimeLocal(date, timeZone) {
+        const parts = getTimeZoneParts(date, timeZone);
+        const pad = (num) => String(num).padStart(2, '0');
+        return `${parts.year}-${pad(parts.month)}-${pad(parts.day)}T${pad(parts.hour === 24 ? 0 : parts.hour)}:${pad(parts.minute)}:${pad(parts.second)}`;
+    }
 
-        if (source === 'celsius') {
-            // (0°C × 9/5) + 32 = 32°F
-            f.value = ((c.value * 9/5) + 32).toFixed(2);
-        } else {
-            // (32°F − 32) × 5/9 = 0°C
-            c.value = ((f.value - 32) * 5/9).toFixed(2);
+    function detectInput(value) {
+        const trimmed = value.trim();
+        if (!trimmed) return { date: null, type: '等待输入' };
+
+        if (/^-?\d+(\.\d+)?$/.test(trimmed)) {
+            const numberValue = Number(trimmed);
+            const digitCount = trimmed.replace(/^-|\./g, '').length;
+            if (!Number.isFinite(numberValue)) return { date: null, type: '数字超出范围' };
+            if (digitCount <= 10) return { date: new Date(numberValue * 1000), type: 'Unix seconds' };
+            if (digitCount <= 13) return { date: new Date(numberValue), type: 'Unix milliseconds' };
+            if (digitCount <= 16) return { date: new Date(numberValue / 1000), type: 'Unix microseconds' };
+            return { date: new Date(numberValue / 1000000), type: 'Unix nanoseconds' };
         }
-        if(!c.value && !f.value) { c.value=""; f.value=""; }
+
+        const parsed = Date.parse(trimmed);
+        if (!Number.isNaN(parsed)) return { date: new Date(parsed), type: 'Date string' };
+        return { date: null, type: '无法识别' };
     }
+
+    function relativeTime(date) {
+        const seconds = Math.round((date.getTime() - Date.now()) / 1000);
+        const units = [
+            ['year', 31536000],
+            ['month', 2592000],
+            ['day', 86400],
+            ['hour', 3600],
+            ['minute', 60],
+            ['second', 1]
+        ];
+        const formatter = new Intl.RelativeTimeFormat('zh-CN', { numeric: 'auto' });
+        for (const [unit, value] of units) {
+            if (Math.abs(seconds) >= value || unit === 'second') {
+                return formatter.format(Math.round(seconds / value), unit);
+            }
+        }
+    }
+
+    function resultRows(date) {
+        const selectedTz = timezoneSelect.value;
+        return [
+            ['Unix seconds', Math.floor(date.getTime() / 1000)],
+            ['Unix milliseconds', date.getTime()],
+            ['UTC ISO', date.toISOString()],
+            ['Local time', date.toLocaleString()],
+            [selectedTz, formatInTimeZone(date, selectedTz, { timeZoneName: 'short' })],
+            ['RFC 2822', date.toUTCString()],
+            ['Relative', relativeTime(date)]
+        ];
+    }
+
+    function renderResults(date) {
+        results.innerHTML = '';
+        if (!date || Number.isNaN(date.getTime())) {
+            results.innerHTML = '<div class="hint">输入一个 timestamp 或日期后，这里会显示所有转换结果。</div>';
+            return;
+        }
+        resultRows(date).forEach(([name, value]) => {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.innerHTML = `
+                <div class="result-name"></div>
+                <div class="result-value"></div>
+                <button class="copy-btn" type="button" title="复制结果">Copy</button>
+            `;
+            item.querySelector('.result-name').textContent = name;
+            item.querySelector('.result-value').textContent = value;
+            item.querySelector('button').addEventListener('click', () => copyText(String(value)));
+            results.appendChild(item);
+        });
+    }
+
+    function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.classList.toggle('error', isError);
+    }
+
+    async function copyText(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            setStatus('已复制');
+        } catch (error) {
+            setStatus('当前浏览器不允许自动复制，请手动选择文本。', true);
+        }
+    }
+
+    function updateFromSmartInput() {
+        if (sourceLock) return;
+        const detected = detectInput(smartInput.value);
+        detectedType.value = detected.type;
+        if (!detected.date) {
+            renderResults(null);
+            setStatus(detected.type === '无法识别' ? '请输入有效 timestamp 或日期。' : '', detected.type === '无法识别');
+            return;
+        }
+        activeDate = detected.date;
+        sourceLock = true;
+        dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
+        sourceLock = false;
+        renderResults(activeDate);
+        setStatus('');
+    }
+
+    function updateFromDateInput() {
+        if (sourceLock || !dateInput.value) return;
+        const date = zonedDateToUtc(dateInput.value, timezoneSelect.value);
+        if (!date || Number.isNaN(date.getTime())) {
+            setStatus('请输入有效日期。', true);
+            return;
+        }
+        activeDate = date;
+        sourceLock = true;
+        smartInput.value = Math.floor(date.getTime() / 1000);
+        detectedType.value = 'Date in selected timezone';
+        sourceLock = false;
+        renderResults(activeDate);
+        setStatus('');
+    }
+
+    function useNow() {
+        activeDate = new Date();
+        sourceLock = true;
+        smartInput.value = Math.floor(activeDate.getTime() / 1000);
+        dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
+        detectedType.value = 'Current time';
+        sourceLock = false;
+        renderResults(activeDate);
+        setStatus('');
+    }
+
+    function updateLiveTimestamp() {
+        document.getElementById('liveTimestamp').textContent = Math.floor(Date.now() / 1000);
+        if (activeDate) renderResults(activeDate);
+    }
+
+    smartInput.addEventListener('input', updateFromSmartInput);
+    dateInput.addEventListener('input', updateFromDateInput);
+    timezoneSelect.addEventListener('change', () => {
+        dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
+        renderResults(activeDate);
+        if (detectedType.value === 'Date in selected timezone') updateFromDateInput();
+    });
+    document.getElementById('useNowBtn').addEventListener('click', useNow);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        smartInput.value = '';
+        dateInput.value = '';
+        detectedType.value = '等待输入';
+        renderResults(null);
+        setStatus('');
+    });
+    document.querySelectorAll('[data-example]').forEach((button) => {
+        button.addEventListener('click', () => {
+            smartInput.value = button.dataset.example;
+            updateFromSmartInput();
+        });
+    });
+    document.querySelectorAll('[data-copy-target]').forEach((button) => {
+        button.addEventListener('click', () => copyText(document.getElementById(button.dataset.copyTarget).textContent));
+    });
+
+    useNow();
+    updateLiveTimestamp();
+    setInterval(updateLiveTimestamp, 1000);
 </script>
-
 </body>
 </html>
