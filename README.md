@@ -29,19 +29,21 @@ A lightweight bilingual timestamp utility site built as a single static HTML pag
 
 ### Layer 3: SEO And Shareability
 
-- URL lookup support through query or hash values:
+- Real static URL pages for long-tail search intents:
+  - `/unix-timestamp-converter`
+  - `/timestamp-to-date`
+  - `/date-to-timestamp`
+  - `/milliseconds-to-date`
+  - `/batch-timestamp-converter`
+  - `/time-difference-calculator`
+  - `/cron-expression-preview`
+  - `/current-unix-timestamp`
+- URL lookup support through query values:
   - `?t=1713528896`
-  - `#1713528896`
   - `?t=now`
-- SEO-focused sections for long-tail search intents:
-  - Timestamp Converter
-  - Batch Timestamp Converter
-  - Time Difference Calculator
-  - Cron Schedule Preview
-  - Timestamp Now
-  - URL Timestamp Lookup
 - FAQ content for common timestamp questions.
 - Bilingual metadata and UI copy.
+- Default language is English, with Chinese available from the language switcher.
 
 ## Tech Stack
 
