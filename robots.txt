@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://li-me.vercel.app/sitemap.xml
+Sitemap: https://00090004.buzz/sitemap.xml
