@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="RjF4OvvPwRDS-6qWgXiolwaLiYKHQDQvtJyLckU_RKM">
-    <meta name="description" content="在线 Unix timestamp converter，支持秒、毫秒、微秒、纳秒、ISO 日期、UTC 与多时区转换，并可一键复制结果。">
-    <title>Timestamp Converter | Unix 时间戳转换工具</title>
+    <meta name="description" content="Online Unix timestamp converter with seconds, milliseconds, microseconds, nanoseconds, date parsing, UTC, local time, timezone conversion, and one-click copy.">
+    <title>Timestamp Converter | Unix Timestamp Tool</title>
     <style>
         :root {
             --bg: #f6f8fb;
@@ -36,7 +36,36 @@
         main {
             width: min(1120px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 36px 0 48px;
+            padding: 30px 0 48px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .lang-switch {
+            display: inline-grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            padding: 4px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            box-shadow: 0 8px 24px rgba(20, 32, 54, 0.08);
+        }
+
+        .lang-switch button {
+            min-height: 34px;
+            padding: 7px 12px;
+            border-color: transparent;
+            color: var(--muted);
+        }
+
+        .lang-switch button.active {
+            background: var(--primary);
+            color: #fff;
         }
 
         header {
@@ -56,7 +85,7 @@
 
         .subtitle {
             margin: 0;
-            max-width: 680px;
+            max-width: 700px;
             color: var(--muted);
             font-size: 17px;
             line-height: 1.65;
@@ -260,7 +289,9 @@
         }
 
         @media (max-width: 620px) {
-            main { width: min(100% - 22px, 1120px); padding-top: 22px; }
+            main { width: min(100% - 22px, 1120px); padding-top: 18px; }
+            .topbar { justify-content: stretch; }
+            .lang-switch { width: 100%; }
             .panel-body, .panel-head, .faq { padding: 16px; }
             .row, .result-item { grid-template-columns: 1fr; }
             .copy-btn { width: 100%; }
@@ -270,28 +301,35 @@
 </head>
 <body>
 <main>
+    <div class="topbar">
+        <div class="lang-switch" aria-label="Language switcher">
+            <button type="button" data-lang="en">English</button>
+            <button type="button" data-lang="zh">中文</button>
+        </div>
+    </div>
+
     <header>
         <div>
-            <h1>Timestamp Converter</h1>
-            <p class="subtitle">自动识别 Unix 秒、毫秒、微秒、纳秒和常见日期字符串，在 UTC、本地时间与指定时区之间快速转换。</p>
+            <h1 data-i18n="heroTitle">Timestamp Converter</h1>
+            <p class="subtitle" data-i18n="heroSubtitle">Convert Unix timestamps, ISO dates, UTC, local time, and selected timezones in one fast browser-only tool.</p>
         </div>
         <section class="now-box" aria-label="Current Unix timestamp">
-            <span class="label">Current Unix Timestamp</span>
+            <span class="label" data-i18n="currentTimestamp">Current Unix Timestamp</span>
             <div class="now-value">
                 <span id="liveTimestamp">-</span>
-                <button class="copy-btn" data-copy-target="liveTimestamp" title="复制当前时间戳">Copy</button>
+                <button class="copy-btn" data-copy-target="liveTimestamp" data-i18n="copy" data-i18n-title="copyCurrentTitle" title="Copy current timestamp">Copy</button>
             </div>
         </section>
     </header>
 
     <section class="grid">
         <div class="panel">
-            <div class="panel-head"><h2>输入</h2></div>
+            <div class="panel-head"><h2 data-i18n="inputTitle">Input</h2></div>
             <div class="panel-body">
                 <div class="field">
-                    <label class="label" for="smartInput">Timestamp 或日期</label>
-                    <textarea id="smartInput" spellcheck="false" placeholder="例如：1713528896、1713528896000、2024-04-19T10:54:56Z"></textarea>
-                    <p class="hint">数字会按长度自动判断秒、毫秒、微秒或纳秒；日期字符串会按浏览器可解析格式处理。</p>
+                    <label class="label" for="smartInput" data-i18n="smartInputLabel">Timestamp or date</label>
+                    <textarea id="smartInput" spellcheck="false" data-i18n-placeholder="smartInputPlaceholder" placeholder="Example: 1713528896, 1713528896000, 2024-04-19T10:54:56Z"></textarea>
+                    <p class="hint" data-i18n="smartInputHint">Numbers are detected as seconds, milliseconds, microseconds, or nanoseconds by length. Date strings use browser parsing.</p>
                     <div class="quick-examples">
                         <button type="button" data-example="1713528896">Unix seconds</button>
                         <button type="button" data-example="1713528896000">Milliseconds</button>
@@ -300,32 +338,32 @@
                 </div>
 
                 <div class="field">
-                    <label class="label" for="dateInput">日期转 Timestamp</label>
+                    <label class="label" for="dateInput" data-i18n="dateInputLabel">Date to timestamp</label>
                     <input id="dateInput" type="datetime-local" step="1">
-                    <p class="hint">这里的日期会按下方选择的时区解释，再转换成 Unix timestamp。</p>
+                    <p class="hint" data-i18n="dateInputHint">This date is interpreted in the selected timezone, then converted to a Unix timestamp.</p>
                 </div>
 
                 <div class="row">
                     <div class="field">
-                        <label class="label" for="timezoneSelect">时区</label>
+                        <label class="label" for="timezoneSelect" data-i18n="timezoneLabel">Timezone</label>
                         <select id="timezoneSelect"></select>
                     </div>
                     <div class="field">
-                        <label class="label" for="detectedType">识别结果</label>
-                        <input id="detectedType" type="text" readonly value="等待输入">
+                        <label class="label" for="detectedType" data-i18n="detectedLabel">Detected as</label>
+                        <input id="detectedType" type="text" readonly>
                     </div>
                 </div>
 
                 <div class="toolbar">
-                    <button class="primary" type="button" id="useNowBtn">使用当前时间</button>
-                    <button type="button" id="clearBtn">清空</button>
+                    <button class="primary" type="button" id="useNowBtn" data-i18n="useNow">Use current time</button>
+                    <button type="button" id="clearBtn" data-i18n="clear">Clear</button>
                 </div>
                 <div id="status" class="status" role="status"></div>
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-head"><h2>转换结果</h2></div>
+            <div class="panel-head"><h2 data-i18n="resultsTitle">Converted results</h2></div>
             <div class="panel-body">
                 <div id="results" class="result-list"></div>
             </div>
@@ -333,14 +371,109 @@
     </section>
 
     <section class="faq">
-        <h2>常见问题</h2>
-        <p><strong>10 位和 13 位 timestamp 有什么区别？</strong>10 位通常是 Unix 秒，13 位通常是 Unix 毫秒。</p>
-        <p><strong>为什么 UTC 和本地时间不同？</strong>Unix timestamp 本身不带时区，显示成日期时才会按照 UTC、本地或指定时区格式化。</p>
-        <p><strong>这个工具会上传我的输入吗？</strong>不会，转换逻辑全部在浏览器本地完成。</p>
+        <h2 data-i18n="faqTitle">FAQ</h2>
+        <p><strong data-i18n="faq1Q">What is the difference between a 10-digit and 13-digit timestamp?</strong><span data-i18n="faq1A"> A 10-digit timestamp is usually Unix seconds, while a 13-digit timestamp is usually Unix milliseconds.</span></p>
+        <p><strong data-i18n="faq2Q">Why are UTC and local time different?</strong><span data-i18n="faq2A"> A Unix timestamp has no timezone. Timezone only matters when the timestamp is formatted as a date.</span></p>
+        <p><strong data-i18n="faq3Q">Does this tool upload my input?</strong><span data-i18n="faq3A"> No. All conversion happens locally in your browser.</span></p>
     </section>
 </main>
 
 <script>
+    const translations = {
+        en: {
+            title: 'Timestamp Converter | Unix Timestamp Tool',
+            description: 'Online Unix timestamp converter with seconds, milliseconds, microseconds, nanoseconds, date parsing, UTC, local time, timezone conversion, and one-click copy.',
+            heroTitle: 'Timestamp Converter',
+            heroSubtitle: 'Convert Unix timestamps, ISO dates, UTC, local time, and selected timezones in one fast browser-only tool.',
+            currentTimestamp: 'Current Unix Timestamp',
+            copy: 'Copy',
+            copyCurrentTitle: 'Copy current timestamp',
+            inputTitle: 'Input',
+            smartInputLabel: 'Timestamp or date',
+            smartInputPlaceholder: 'Example: 1713528896, 1713528896000, 2024-04-19T10:54:56Z',
+            smartInputHint: 'Numbers are detected as seconds, milliseconds, microseconds, or nanoseconds by length. Date strings use browser parsing.',
+            dateInputLabel: 'Date to timestamp',
+            dateInputHint: 'This date is interpreted in the selected timezone, then converted to a Unix timestamp.',
+            timezoneLabel: 'Timezone',
+            detectedLabel: 'Detected as',
+            useNow: 'Use current time',
+            clear: 'Clear',
+            resultsTitle: 'Converted results',
+            faqTitle: 'FAQ',
+            faq1Q: 'What is the difference between a 10-digit and 13-digit timestamp?',
+            faq1A: ' A 10-digit timestamp is usually Unix seconds, while a 13-digit timestamp is usually Unix milliseconds.',
+            faq2Q: 'Why are UTC and local time different?',
+            faq2A: ' A Unix timestamp has no timezone. Timezone only matters when the timestamp is formatted as a date.',
+            faq3Q: 'Does this tool upload my input?',
+            faq3A: ' No. All conversion happens locally in your browser.',
+            waiting: 'Waiting for input',
+            outOfRange: 'Number out of range',
+            unrecognized: 'Unrecognized input',
+            dateString: 'Date string',
+            selectedDate: 'Date in selected timezone',
+            currentTime: 'Current time',
+            emptyResults: 'Enter a timestamp or date to see all converted results.',
+            copied: 'Copied',
+            copyBlocked: 'This browser blocked automatic copy. Please select and copy the text manually.',
+            validInputRequired: 'Please enter a valid timestamp or date.',
+            validDateRequired: 'Please enter a valid date.',
+            unixSeconds: 'Unix seconds',
+            unixMilliseconds: 'Unix milliseconds',
+            unixMicroseconds: 'Unix microseconds',
+            unixNanoseconds: 'Unix nanoseconds',
+            utcIso: 'UTC ISO',
+            localTime: 'Local time',
+            rfc2822: 'RFC 2822',
+            relative: 'Relative'
+        },
+        zh: {
+            title: 'Timestamp Converter | Unix 时间戳转换工具',
+            description: '在线 Unix timestamp converter，支持秒、毫秒、微秒、纳秒、ISO 日期、UTC、本地时间、多时区转换和一键复制。',
+            heroTitle: '时间戳转换工具',
+            heroSubtitle: '自动识别 Unix 秒、毫秒、微秒、纳秒和常见日期字符串，在 UTC、本地时间与指定时区之间快速转换。',
+            currentTimestamp: '当前 Unix 时间戳',
+            copy: '复制',
+            copyCurrentTitle: '复制当前时间戳',
+            inputTitle: '输入',
+            smartInputLabel: 'Timestamp 或日期',
+            smartInputPlaceholder: '例如：1713528896、1713528896000、2024-04-19T10:54:56Z',
+            smartInputHint: '数字会按长度自动判断秒、毫秒、微秒或纳秒；日期字符串会按浏览器可解析格式处理。',
+            dateInputLabel: '日期转 Timestamp',
+            dateInputHint: '这里的日期会按下方选择的时区解释，再转换成 Unix timestamp。',
+            timezoneLabel: '时区',
+            detectedLabel: '识别结果',
+            useNow: '使用当前时间',
+            clear: '清空',
+            resultsTitle: '转换结果',
+            faqTitle: '常见问题',
+            faq1Q: '10 位和 13 位 timestamp 有什么区别？',
+            faq1A: ' 10 位通常是 Unix 秒，13 位通常是 Unix 毫秒。',
+            faq2Q: '为什么 UTC 和本地时间不同？',
+            faq2A: ' Unix timestamp 本身不带时区，显示成日期时才会按照 UTC、本地或指定时区格式化。',
+            faq3Q: '这个工具会上传我的输入吗？',
+            faq3A: ' 不会，转换逻辑全部在浏览器本地完成。',
+            waiting: '等待输入',
+            outOfRange: '数字超出范围',
+            unrecognized: '无法识别',
+            dateString: '日期字符串',
+            selectedDate: '所选时区日期',
+            currentTime: '当前时间',
+            emptyResults: '输入一个 timestamp 或日期后，这里会显示所有转换结果。',
+            copied: '已复制',
+            copyBlocked: '当前浏览器不允许自动复制，请手动选择文本。',
+            validInputRequired: '请输入有效 timestamp 或日期。',
+            validDateRequired: '请输入有效日期。',
+            unixSeconds: 'Unix 秒',
+            unixMilliseconds: 'Unix 毫秒',
+            unixMicroseconds: 'Unix 微秒',
+            unixNanoseconds: 'Unix 纳秒',
+            utcIso: 'UTC ISO',
+            localTime: '本地时间',
+            rfc2822: 'RFC 2822',
+            relative: '相对时间'
+        }
+    };
+
     const timezones = [
         Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
         'UTC',
@@ -364,6 +497,8 @@
     const statusEl = document.getElementById('status');
     let activeDate = new Date();
     let sourceLock = false;
+    let activeLang = localStorage.getItem('timestampConverterLang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+    let lastDetectedKey = 'currentTime';
 
     uniqueTimezones.forEach((tz) => {
         const option = document.createElement('option');
@@ -372,10 +507,36 @@
         timezoneSelect.appendChild(option);
     });
 
+    function t(key) {
+        return translations[activeLang][key] || translations.en[key] || key;
+    }
+
+    function applyLanguage(lang) {
+        activeLang = lang;
+        localStorage.setItem('timestampConverterLang', lang);
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        document.title = t('title');
+        document.querySelector('meta[name="description"]').setAttribute('content', t('description'));
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
+            element.textContent = t(element.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+            element.setAttribute('placeholder', t(element.dataset.i18nPlaceholder));
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach((element) => {
+            element.setAttribute('title', t(element.dataset.i18nTitle));
+        });
+        document.querySelectorAll('[data-lang]').forEach((button) => {
+            button.classList.toggle('active', button.dataset.lang === lang);
+        });
+        detectedType.value = t(lastDetectedKey);
+        renderResults(activeDate);
+    }
+
     function getFormatter(timeZone, options) {
-        const key = timeZone + JSON.stringify(options);
+        const key = activeLang + timeZone + JSON.stringify(options);
         if (!formatterCache.has(key)) {
-            formatterCache.set(key, new Intl.DateTimeFormat('en-CA', { timeZone, ...options }));
+            formatterCache.set(key, new Intl.DateTimeFormat(activeLang === 'zh' ? 'zh-CN' : 'en-CA', { timeZone, ...options }));
         }
         return formatterCache.get(key);
     }
@@ -436,21 +597,21 @@
 
     function detectInput(value) {
         const trimmed = value.trim();
-        if (!trimmed) return { date: null, type: '等待输入' };
+        if (!trimmed) return { date: null, typeKey: 'waiting' };
 
         if (/^-?\d+(\.\d+)?$/.test(trimmed)) {
             const numberValue = Number(trimmed);
             const digitCount = trimmed.replace(/^-|\./g, '').length;
-            if (!Number.isFinite(numberValue)) return { date: null, type: '数字超出范围' };
-            if (digitCount <= 10) return { date: new Date(numberValue * 1000), type: 'Unix seconds' };
-            if (digitCount <= 13) return { date: new Date(numberValue), type: 'Unix milliseconds' };
-            if (digitCount <= 16) return { date: new Date(numberValue / 1000), type: 'Unix microseconds' };
-            return { date: new Date(numberValue / 1000000), type: 'Unix nanoseconds' };
+            if (!Number.isFinite(numberValue)) return { date: null, typeKey: 'outOfRange' };
+            if (digitCount <= 10) return { date: new Date(numberValue * 1000), typeKey: 'unixSeconds' };
+            if (digitCount <= 13) return { date: new Date(numberValue), typeKey: 'unixMilliseconds' };
+            if (digitCount <= 16) return { date: new Date(numberValue / 1000), typeKey: 'unixMicroseconds' };
+            return { date: new Date(numberValue / 1000000), typeKey: 'unixNanoseconds' };
         }
 
         const parsed = Date.parse(trimmed);
-        if (!Number.isNaN(parsed)) return { date: new Date(parsed), type: 'Date string' };
-        return { date: null, type: '无法识别' };
+        if (!Number.isNaN(parsed)) return { date: new Date(parsed), typeKey: 'dateString' };
+        return { date: null, typeKey: 'unrecognized' };
     }
 
     function relativeTime(date) {
@@ -463,7 +624,7 @@
             ['minute', 60],
             ['second', 1]
         ];
-        const formatter = new Intl.RelativeTimeFormat('zh-CN', { numeric: 'auto' });
+        const formatter = new Intl.RelativeTimeFormat(activeLang === 'zh' ? 'zh-CN' : 'en', { numeric: 'auto' });
         for (const [unit, value] of units) {
             if (Math.abs(seconds) >= value || unit === 'second') {
                 return formatter.format(Math.round(seconds / value), unit);
@@ -474,20 +635,20 @@
     function resultRows(date) {
         const selectedTz = timezoneSelect.value;
         return [
-            ['Unix seconds', Math.floor(date.getTime() / 1000)],
-            ['Unix milliseconds', date.getTime()],
-            ['UTC ISO', date.toISOString()],
-            ['Local time', date.toLocaleString()],
+            [t('unixSeconds'), Math.floor(date.getTime() / 1000)],
+            [t('unixMilliseconds'), date.getTime()],
+            [t('utcIso'), date.toISOString()],
+            [t('localTime'), date.toLocaleString(activeLang === 'zh' ? 'zh-CN' : 'en')],
             [selectedTz, formatInTimeZone(date, selectedTz, { timeZoneName: 'short' })],
-            ['RFC 2822', date.toUTCString()],
-            ['Relative', relativeTime(date)]
+            [t('rfc2822'), date.toUTCString()],
+            [t('relative'), relativeTime(date)]
         ];
     }
 
     function renderResults(date) {
         results.innerHTML = '';
         if (!date || Number.isNaN(date.getTime())) {
-            results.innerHTML = '<div class="hint">输入一个 timestamp 或日期后，这里会显示所有转换结果。</div>';
+            results.innerHTML = `<div class="hint">${t('emptyResults')}</div>`;
             return;
         }
         resultRows(date).forEach(([name, value]) => {
@@ -496,11 +657,14 @@
             item.innerHTML = `
                 <div class="result-name"></div>
                 <div class="result-value"></div>
-                <button class="copy-btn" type="button" title="复制结果">Copy</button>
+                <button class="copy-btn" type="button"></button>
             `;
             item.querySelector('.result-name').textContent = name;
             item.querySelector('.result-value').textContent = value;
-            item.querySelector('button').addEventListener('click', () => copyText(String(value)));
+            const copyButton = item.querySelector('button');
+            copyButton.textContent = t('copy');
+            copyButton.title = t('copy');
+            copyButton.addEventListener('click', () => copyText(String(value)));
             results.appendChild(item);
         });
     }
@@ -513,19 +677,20 @@
     async function copyText(text) {
         try {
             await navigator.clipboard.writeText(text);
-            setStatus('已复制');
+            setStatus(t('copied'));
         } catch (error) {
-            setStatus('当前浏览器不允许自动复制，请手动选择文本。', true);
+            setStatus(t('copyBlocked'), true);
         }
     }
 
     function updateFromSmartInput() {
         if (sourceLock) return;
         const detected = detectInput(smartInput.value);
-        detectedType.value = detected.type;
+        lastDetectedKey = detected.typeKey;
+        detectedType.value = t(detected.typeKey);
         if (!detected.date) {
             renderResults(null);
-            setStatus(detected.type === '无法识别' ? '请输入有效 timestamp 或日期。' : '', detected.type === '无法识别');
+            setStatus(detected.typeKey === 'unrecognized' ? t('validInputRequired') : '', detected.typeKey === 'unrecognized');
             return;
         }
         activeDate = detected.date;
@@ -540,13 +705,14 @@
         if (sourceLock || !dateInput.value) return;
         const date = zonedDateToUtc(dateInput.value, timezoneSelect.value);
         if (!date || Number.isNaN(date.getTime())) {
-            setStatus('请输入有效日期。', true);
+            setStatus(t('validDateRequired'), true);
             return;
         }
         activeDate = date;
         sourceLock = true;
         smartInput.value = Math.floor(date.getTime() / 1000);
-        detectedType.value = 'Date in selected timezone';
+        lastDetectedKey = 'selectedDate';
+        detectedType.value = t(lastDetectedKey);
         sourceLock = false;
         renderResults(activeDate);
         setStatus('');
@@ -557,7 +723,8 @@
         sourceLock = true;
         smartInput.value = Math.floor(activeDate.getTime() / 1000);
         dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
-        detectedType.value = 'Current time';
+        lastDetectedKey = 'currentTime';
+        detectedType.value = t(lastDetectedKey);
         sourceLock = false;
         renderResults(activeDate);
         setStatus('');
@@ -573,13 +740,14 @@
     timezoneSelect.addEventListener('change', () => {
         dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
         renderResults(activeDate);
-        if (detectedType.value === 'Date in selected timezone') updateFromDateInput();
+        if (lastDetectedKey === 'selectedDate') updateFromDateInput();
     });
     document.getElementById('useNowBtn').addEventListener('click', useNow);
     document.getElementById('clearBtn').addEventListener('click', () => {
         smartInput.value = '';
         dateInput.value = '';
-        detectedType.value = '等待输入';
+        lastDetectedKey = 'waiting';
+        detectedType.value = t(lastDetectedKey);
         renderResults(null);
         setStatus('');
     });
@@ -592,7 +760,11 @@
     document.querySelectorAll('[data-copy-target]').forEach((button) => {
         button.addEventListener('click', () => copyText(document.getElementById(button.dataset.copyTarget).textContent));
     });
+    document.querySelectorAll('[data-lang]').forEach((button) => {
+        button.addEventListener('click', () => applyLanguage(button.dataset.lang));
+    });
 
+    applyLanguage(activeLang);
     useNow();
     updateLiveTimestamp();
     setInterval(updateLiveTimestamp, 1000);
