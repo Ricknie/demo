@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="RjF4OvvPwRDS-6qWgXiolwaLiYKHQDQvtJyLckU_RKM">
-    <meta name="description" content="Online Unix timestamp converter with seconds, milliseconds, microseconds, nanoseconds, date parsing, UTC, local time, timezone conversion, and one-click copy.">
+    <meta name="description" content="Online Unix timestamp converter with batch conversion, time difference calculator, cron preview, timezone conversion, and bilingual English/Chinese UI.">
     <title>Timestamp Converter | Unix Timestamp Tool</title>
     <style>
         :root {
@@ -34,7 +34,7 @@
         }
 
         main {
-            width: min(1120px, calc(100% - 32px));
+            width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
             padding: 30px 0 48px;
         }
@@ -85,7 +85,7 @@
 
         .subtitle {
             margin: 0;
-            max-width: 700px;
+            max-width: 760px;
             color: var(--muted);
             font-size: 17px;
             line-height: 1.65;
@@ -119,14 +119,18 @@
             font-weight: 800;
         }
 
-        .grid {
+        .grid, .tool-grid {
             display: grid;
             grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
             gap: 18px;
             align-items: start;
         }
 
-        .panel {
+        .tool-grid {
+            margin-top: 18px;
+        }
+
+        .panel, .seo-card {
             border: 1px solid var(--line);
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.92);
@@ -141,6 +145,11 @@
         h2 {
             margin: 0;
             font-size: 20px;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
         }
 
         .panel-body { padding: 20px; }
@@ -174,7 +183,7 @@
         .field { margin-bottom: 16px; }
         .field:last-child { margin-bottom: 0; }
 
-        .hint {
+        .hint, .seo-card p {
             margin: 8px 0 0;
             color: var(--muted);
             font-size: 13px;
@@ -194,7 +203,7 @@
             margin-top: 14px;
         }
 
-        button {
+        button, .seo-link {
             border: 1px solid var(--line);
             border-radius: 8px;
             background: #fff;
@@ -204,19 +213,20 @@
             font-weight: 700;
             min-height: 40px;
             padding: 9px 13px;
+            text-decoration: none;
             transition: transform 0.15s, border-color 0.15s, background 0.15s;
         }
 
-        button:hover { border-color: var(--primary); transform: translateY(-1px); }
+        button:hover, .seo-link:hover { border-color: var(--primary); transform: translateY(-1px); }
         button.primary { border-color: var(--primary); background: var(--primary); color: #fff; }
         button.primary:hover { background: var(--primary-dark); }
 
-        .result-list {
+        .result-list, .compact-list {
             display: grid;
             gap: 10px;
         }
 
-        .result-item {
+        .result-item, .compact-item {
             display: grid;
             grid-template-columns: 150px minmax(0, 1fr) auto;
             gap: 12px;
@@ -225,6 +235,14 @@
             border: 1px solid var(--line);
             border-radius: 8px;
             background: #fff;
+        }
+
+        .compact-item {
+            grid-template-columns: minmax(0, 1fr);
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
         }
 
         .result-name {
@@ -271,6 +289,24 @@
             font-weight: 700;
         }
 
+        .seo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .seo-card {
+            padding: 16px;
+            box-shadow: 0 10px 28px rgba(20, 32, 54, 0.08);
+        }
+
+        .seo-card code {
+            color: var(--primary);
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 13px;
+        }
+
         .faq {
             margin-top: 18px;
             padding: 20px;
@@ -283,8 +319,8 @@
         .faq p { margin: 8px 0; color: var(--muted); line-height: 1.7; }
         .faq strong { color: var(--text); }
 
-        @media (max-width: 860px) {
-            header, .grid { grid-template-columns: 1fr; }
+        @media (max-width: 920px) {
+            header, .grid, .tool-grid, .seo-grid { grid-template-columns: 1fr; }
             .now-box { min-width: 0; }
         }
 
@@ -311,7 +347,7 @@
     <header>
         <div>
             <h1 data-i18n="heroTitle">Timestamp Converter</h1>
-            <p class="subtitle" data-i18n="heroSubtitle">Convert Unix timestamps, ISO dates, UTC, local time, and selected timezones in one fast browser-only tool.</p>
+            <p class="subtitle" data-i18n="heroSubtitle">Convert Unix timestamps, ISO dates, batch logs, cron schedules, UTC, local time, and selected timezones in one fast browser-only tool.</p>
         </div>
         <section class="now-box" aria-label="Current Unix timestamp">
             <span class="label" data-i18n="currentTimestamp">Current Unix Timestamp</span>
@@ -322,7 +358,7 @@
         </section>
     </header>
 
-    <section class="grid">
+    <section class="grid" id="timestamp-converter">
         <div class="panel">
             <div class="panel-head"><h2 data-i18n="inputTitle">Input</h2></div>
             <div class="panel-body">
@@ -370,6 +406,112 @@
         </div>
     </section>
 
+    <section class="tool-grid" id="batch-timestamp-converter">
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="batchTitle">Batch timestamp converter</h2></div>
+            <div class="panel-body">
+                <label class="label" for="batchInput" data-i18n="batchLabel">One timestamp or date per line</label>
+                <textarea id="batchInput" spellcheck="false" data-i18n-placeholder="batchPlaceholder" placeholder="1713528896&#10;1713528896000&#10;2024-04-19T10:54:56Z"></textarea>
+                <p class="hint" data-i18n="batchHint">Useful for logs, CSV exports, database rows, and analytics data.</p>
+                <div class="toolbar">
+                    <button class="primary" type="button" id="batchConvertBtn" data-i18n="convertBatch">Convert batch</button>
+                    <button type="button" id="copyBatchCsvBtn" data-i18n="copyCsv">Copy CSV</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="batchResultsTitle">Batch results</h2></div>
+            <div class="panel-body">
+                <div id="batchResults" class="compact-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-grid" id="time-difference-calculator">
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="diffTitle">Time difference calculator</h2></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="field">
+                        <label class="label" for="diffStart" data-i18n="startTime">Start time</label>
+                        <input id="diffStart" type="datetime-local" step="1">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="diffEnd" data-i18n="endTime">End time</label>
+                        <input id="diffEnd" type="datetime-local" step="1">
+                    </div>
+                </div>
+                <p class="hint" data-i18n="diffHint">Both dates are interpreted in the selected timezone.</p>
+                <div class="toolbar">
+                    <button class="primary" type="button" id="diffBtn" data-i18n="calculateDiff">Calculate difference</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="diffResultsTitle">Difference</h2></div>
+            <div class="panel-body">
+                <div id="diffResults" class="result-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-grid" id="cron-preview">
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="cronTitle">Cron schedule preview</h2></div>
+            <div class="panel-body">
+                <label class="label" for="cronInput" data-i18n="cronLabel">Cron expression</label>
+                <input id="cronInput" value="*/15 * * * *" placeholder="*/15 * * * *">
+                <p class="hint" data-i18n="cronHint">Supports five-field cron with *, numbers, ranges, lists, and steps. Preview uses the selected timezone.</p>
+                <div class="toolbar">
+                    <button class="primary" type="button" id="cronBtn" data-i18n="previewCron">Preview next runs</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h2 data-i18n="cronResultsTitle">Next run times</h2></div>
+            <div class="panel-body">
+                <div id="cronResults" class="compact-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="seo-pages">
+        <h2 data-i18n="seoTitle">SEO entry points</h2>
+        <p data-i18n="seoIntro">The tool supports quick URL input with query or hash values, for example ?t=1713528896 or #1713528896. These sections also cover the main long-tail search intents for a timestamp utility site.</p>
+        <div class="seo-grid">
+            <article class="seo-card">
+                <h3>Timestamp Converter</h3>
+                <code>/#timestamp-converter</code>
+                <p data-i18n="seoCard1">Main converter for Unix timestamps, ISO dates, UTC, local time, and timezone output.</p>
+            </article>
+            <article class="seo-card">
+                <h3>Batch Timestamp Converter</h3>
+                <code>/#batch-timestamp-converter</code>
+                <p data-i18n="seoCard2">Batch workflow for logs, CSV rows, analytics exports, and database values.</p>
+            </article>
+            <article class="seo-card">
+                <h3>Time Difference Calculator</h3>
+                <code>/#time-difference-calculator</code>
+                <p data-i18n="seoCard3">Compare two dates or timestamps and get days, hours, minutes, seconds, and milliseconds.</p>
+            </article>
+            <article class="seo-card">
+                <h3>Cron Schedule Preview</h3>
+                <code>/#cron-preview</code>
+                <p data-i18n="seoCard4">Preview upcoming cron run times for DevOps, automation, and scheduling tasks.</p>
+            </article>
+            <article class="seo-card">
+                <h3>Timestamp Now</h3>
+                <code>/?t=now</code>
+                <p data-i18n="seoCard5">Live current Unix timestamp with one-click copy.</p>
+            </article>
+            <article class="seo-card">
+                <h3>URL Timestamp Lookup</h3>
+                <code>/?t=1713528896</code>
+                <p data-i18n="seoCard6">Shareable timestamp lookup through URL query or hash values.</p>
+            </article>
+        </div>
+    </section>
+
     <section class="faq">
         <h2 data-i18n="faqTitle">FAQ</h2>
         <p><strong data-i18n="faq1Q">What is the difference between a 10-digit and 13-digit timestamp?</strong><span data-i18n="faq1A"> A 10-digit timestamp is usually Unix seconds, while a 13-digit timestamp is usually Unix milliseconds.</span></p>
@@ -382,9 +524,9 @@
     const translations = {
         en: {
             title: 'Timestamp Converter | Unix Timestamp Tool',
-            description: 'Online Unix timestamp converter with seconds, milliseconds, microseconds, nanoseconds, date parsing, UTC, local time, timezone conversion, and one-click copy.',
+            description: 'Online Unix timestamp converter with batch conversion, time difference calculator, cron preview, timezone conversion, and bilingual English/Chinese UI.',
             heroTitle: 'Timestamp Converter',
-            heroSubtitle: 'Convert Unix timestamps, ISO dates, UTC, local time, and selected timezones in one fast browser-only tool.',
+            heroSubtitle: 'Convert Unix timestamps, ISO dates, batch logs, cron schedules, UTC, local time, and selected timezones in one fast browser-only tool.',
             currentTimestamp: 'Current Unix Timestamp',
             copy: 'Copy',
             copyCurrentTitle: 'Copy current timestamp',
@@ -399,6 +541,32 @@
             useNow: 'Use current time',
             clear: 'Clear',
             resultsTitle: 'Converted results',
+            batchTitle: 'Batch timestamp converter',
+            batchLabel: 'One timestamp or date per line',
+            batchPlaceholder: '1713528896\n1713528896000\n2024-04-19T10:54:56Z',
+            batchHint: 'Useful for logs, CSV exports, database rows, and analytics data.',
+            convertBatch: 'Convert batch',
+            copyCsv: 'Copy CSV',
+            batchResultsTitle: 'Batch results',
+            diffTitle: 'Time difference calculator',
+            startTime: 'Start time',
+            endTime: 'End time',
+            diffHint: 'Both dates are interpreted in the selected timezone.',
+            calculateDiff: 'Calculate difference',
+            diffResultsTitle: 'Difference',
+            cronTitle: 'Cron schedule preview',
+            cronLabel: 'Cron expression',
+            cronHint: 'Supports five-field cron with *, numbers, ranges, lists, and steps. Preview uses the selected timezone.',
+            previewCron: 'Preview next runs',
+            cronResultsTitle: 'Next run times',
+            seoTitle: 'SEO entry points',
+            seoIntro: 'The tool supports quick URL input with query or hash values, for example ?t=1713528896 or #1713528896. These sections also cover the main long-tail search intents for a timestamp utility site.',
+            seoCard1: 'Main converter for Unix timestamps, ISO dates, UTC, local time, and timezone output.',
+            seoCard2: 'Batch workflow for logs, CSV rows, analytics exports, and database values.',
+            seoCard3: 'Compare two dates or timestamps and get days, hours, minutes, seconds, and milliseconds.',
+            seoCard4: 'Preview upcoming cron run times for DevOps, automation, and scheduling tasks.',
+            seoCard5: 'Live current Unix timestamp with one-click copy.',
+            seoCard6: 'Shareable timestamp lookup through URL query or hash values.',
             faqTitle: 'FAQ',
             faq1Q: 'What is the difference between a 10-digit and 13-digit timestamp?',
             faq1A: ' A 10-digit timestamp is usually Unix seconds, while a 13-digit timestamp is usually Unix milliseconds.',
@@ -424,13 +592,24 @@
             utcIso: 'UTC ISO',
             localTime: 'Local time',
             rfc2822: 'RFC 2822',
-            relative: 'Relative'
+            relative: 'Relative',
+            invalidLine: 'Invalid',
+            noBatch: 'Paste at least one value to convert.',
+            csvCopied: 'CSV copied',
+            totalDays: 'Total days',
+            totalHours: 'Total hours',
+            totalMinutes: 'Total minutes',
+            totalSeconds: 'Total seconds',
+            totalMilliseconds: 'Total milliseconds',
+            humanDiff: 'Human-readable',
+            cronInvalid: 'Invalid cron expression',
+            cronNoRuns: 'No run time found within one year.'
         },
         zh: {
             title: 'Timestamp Converter | Unix 时间戳转换工具',
-            description: '在线 Unix timestamp converter，支持秒、毫秒、微秒、纳秒、ISO 日期、UTC、本地时间、多时区转换和一键复制。',
+            description: '在线 Unix timestamp converter，支持批量转换、时间差计算、Cron 预览、时区转换和中英文双语界面。',
             heroTitle: '时间戳转换工具',
-            heroSubtitle: '自动识别 Unix 秒、毫秒、微秒、纳秒和常见日期字符串，在 UTC、本地时间与指定时区之间快速转换。',
+            heroSubtitle: '自动识别 Unix 时间戳、ISO 日期、批量日志、Cron 计划、UTC、本地时间和指定时区，所有转换都在浏览器本地完成。',
             currentTimestamp: '当前 Unix 时间戳',
             copy: '复制',
             copyCurrentTitle: '复制当前时间戳',
@@ -445,6 +624,32 @@
             useNow: '使用当前时间',
             clear: '清空',
             resultsTitle: '转换结果',
+            batchTitle: '批量时间戳转换',
+            batchLabel: '每行一个 timestamp 或日期',
+            batchPlaceholder: '1713528896\n1713528896000\n2024-04-19T10:54:56Z',
+            batchHint: '适合日志、CSV 导出、数据库行和分析数据。',
+            convertBatch: '批量转换',
+            copyCsv: '复制 CSV',
+            batchResultsTitle: '批量结果',
+            diffTitle: '时间差计算器',
+            startTime: '开始时间',
+            endTime: '结束时间',
+            diffHint: '两个日期都会按当前选择的时区解释。',
+            calculateDiff: '计算时间差',
+            diffResultsTitle: '时间差结果',
+            cronTitle: 'Cron 执行时间预览',
+            cronLabel: 'Cron 表达式',
+            cronHint: '支持五段 Cron：*、数字、范围、列表和步长。预览按所选时区计算。',
+            previewCron: '预览未来执行',
+            cronResultsTitle: '未来执行时间',
+            seoTitle: 'SEO 入口',
+            seoIntro: '工具支持通过 URL 参数或 hash 快速查询，例如 ?t=1713528896 或 #1713528896。这些区块覆盖 timestamp 工具站常见长尾搜索意图。',
+            seoCard1: '主转换器，覆盖 Unix 时间戳、ISO 日期、UTC、本地时间和时区输出。',
+            seoCard2: '面向日志、CSV 行、分析导出和数据库值的批量转换工作流。',
+            seoCard3: '比较两个日期或 timestamp，输出天、小时、分钟、秒和毫秒。',
+            seoCard4: '为 DevOps、自动化和计划任务预览 Cron 的未来执行时间。',
+            seoCard5: '实时当前 Unix 时间戳，并支持一键复制。',
+            seoCard6: '通过 URL query 或 hash 分享指定 timestamp 的转换结果。',
             faqTitle: '常见问题',
             faq1Q: '10 位和 13 位 timestamp 有什么区别？',
             faq1A: ' 10 位通常是 Unix 秒，13 位通常是 Unix 毫秒。',
@@ -470,7 +675,18 @@
             utcIso: 'UTC ISO',
             localTime: '本地时间',
             rfc2822: 'RFC 2822',
-            relative: '相对时间'
+            relative: '相对时间',
+            invalidLine: '无效',
+            noBatch: '请至少粘贴一个待转换的值。',
+            csvCopied: 'CSV 已复制',
+            totalDays: '总天数',
+            totalHours: '总小时',
+            totalMinutes: '总分钟',
+            totalSeconds: '总秒数',
+            totalMilliseconds: '总毫秒',
+            humanDiff: '易读结果',
+            cronInvalid: 'Cron 表达式无效',
+            cronNoRuns: '一年内没有找到执行时间。'
         }
     };
 
@@ -495,8 +711,16 @@
     const detectedType = document.getElementById('detectedType');
     const results = document.getElementById('results');
     const statusEl = document.getElementById('status');
+    const batchInput = document.getElementById('batchInput');
+    const batchResults = document.getElementById('batchResults');
+    const diffStart = document.getElementById('diffStart');
+    const diffEnd = document.getElementById('diffEnd');
+    const diffResults = document.getElementById('diffResults');
+    const cronInput = document.getElementById('cronInput');
+    const cronResults = document.getElementById('cronResults');
     let activeDate = new Date();
     let sourceLock = false;
+    let batchCsv = '';
     let activeLang = localStorage.getItem('timestampConverterLang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
     let lastDetectedKey = 'currentTime';
 
@@ -531,6 +755,9 @@
         });
         detectedType.value = t(lastDetectedKey);
         renderResults(activeDate);
+        renderBatch();
+        renderDiff();
+        previewCron();
     }
 
     function getFormatter(timeZone, options) {
@@ -598,6 +825,7 @@
     function detectInput(value) {
         const trimmed = value.trim();
         if (!trimmed) return { date: null, typeKey: 'waiting' };
+        if (trimmed.toLowerCase() === 'now') return { date: new Date(), typeKey: 'currentTime' };
 
         if (/^-?\d+(\.\d+)?$/.test(trimmed)) {
             const numberValue = Number(trimmed);
@@ -669,6 +897,25 @@
         });
     }
 
+    function renderKeyValue(container, rows) {
+        container.innerHTML = '';
+        rows.forEach(([name, value]) => {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.innerHTML = `
+                <div class="result-name"></div>
+                <div class="result-value"></div>
+                <button class="copy-btn" type="button"></button>
+            `;
+            item.querySelector('.result-name').textContent = name;
+            item.querySelector('.result-value').textContent = value;
+            const button = item.querySelector('button');
+            button.textContent = t('copy');
+            button.addEventListener('click', () => copyText(String(value)));
+            container.appendChild(item);
+        });
+    }
+
     function setStatus(message, isError = false) {
         statusEl.textContent = message;
         statusEl.classList.toggle('error', isError);
@@ -723,6 +970,7 @@
         sourceLock = true;
         smartInput.value = Math.floor(activeDate.getTime() / 1000);
         dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
+        diffEnd.value = dateInput.value;
         lastDetectedKey = 'currentTime';
         detectedType.value = t(lastDetectedKey);
         sourceLock = false;
@@ -735,11 +983,154 @@
         if (activeDate) renderResults(activeDate);
     }
 
+    function renderBatch() {
+        const lines = batchInput.value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        batchResults.innerHTML = '';
+        if (!lines.length) {
+            batchResults.innerHTML = `<div class="hint">${t('noBatch')}</div>`;
+            batchCsv = '';
+            return;
+        }
+        const rows = [['input', 'detected', 'unix_seconds', 'unix_milliseconds', 'utc_iso', timezoneSelect.value]];
+        lines.forEach((line) => {
+            const detected = detectInput(line);
+            const item = document.createElement('div');
+            item.className = 'compact-item';
+            if (!detected.date || Number.isNaN(detected.date.getTime())) {
+                item.textContent = `${line} -> ${t('invalidLine')}`;
+                rows.push([line, t(detected.typeKey), '', '', '', '']);
+            } else {
+                const zoned = formatInTimeZone(detected.date, timezoneSelect.value, { timeZoneName: 'short' });
+                item.textContent = `${line} -> ${detected.date.toISOString()} | ${timezoneSelect.value}: ${zoned}`;
+                rows.push([line, t(detected.typeKey), Math.floor(detected.date.getTime() / 1000), detected.date.getTime(), detected.date.toISOString(), zoned]);
+            }
+            batchResults.appendChild(item);
+        });
+        batchCsv = rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    }
+
+    function renderDiff() {
+        diffResults.innerHTML = '';
+        if (!diffStart.value || !diffEnd.value) {
+            diffResults.innerHTML = `<div class="hint">${t('validDateRequired')}</div>`;
+            return;
+        }
+        const start = zonedDateToUtc(diffStart.value, timezoneSelect.value);
+        const end = zonedDateToUtc(diffEnd.value, timezoneSelect.value);
+        if (!start || !end) {
+            diffResults.innerHTML = `<div class="hint">${t('validDateRequired')}</div>`;
+            return;
+        }
+        const ms = Math.abs(end.getTime() - start.getTime());
+        const seconds = Math.floor(ms / 1000);
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        renderKeyValue(diffResults, [
+            [t('humanDiff'), `${days}d ${hours}h ${minutes}m ${secs}s`],
+            [t('totalDays'), (ms / 86400000).toFixed(6)],
+            [t('totalHours'), (ms / 3600000).toFixed(3)],
+            [t('totalMinutes'), (ms / 60000).toFixed(3)],
+            [t('totalSeconds'), seconds],
+            [t('totalMilliseconds'), ms]
+        ]);
+    }
+
+    function parseCronField(field, min, max) {
+        const values = new Set();
+        for (const part of field.split(',')) {
+            const [rangePart, stepPart] = part.split('/');
+            const step = stepPart ? Number(stepPart) : 1;
+            if (!Number.isInteger(step) || step < 1) return null;
+            let start = min;
+            let end = max;
+            if (rangePart !== '*') {
+                if (rangePart.includes('-')) {
+                    const [from, to] = rangePart.split('-').map(Number);
+                    start = from;
+                    end = to;
+                } else {
+                    start = Number(rangePart);
+                    end = Number(rangePart);
+                }
+            }
+            if (!Number.isInteger(start) || !Number.isInteger(end) || start < min || end > max || start > end) return null;
+            for (let value = start; value <= end; value += step) values.add(value);
+        }
+        return values;
+    }
+
+    function cronMatches(date, fields, timeZone) {
+        const parts = getTimeZoneParts(date, timeZone);
+        const dayOfWeek = new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
+        return fields.minutes.has(parts.minute)
+            && fields.hours.has(parts.hour === 24 ? 0 : parts.hour)
+            && fields.days.has(parts.day)
+            && fields.months.has(parts.month)
+            && fields.weekdays.has(dayOfWeek);
+    }
+
+    function previewCron() {
+        cronResults.innerHTML = '';
+        const pieces = cronInput.value.trim().split(/\s+/);
+        if (pieces.length !== 5) {
+            cronResults.innerHTML = `<div class="hint">${t('cronInvalid')}</div>`;
+            return;
+        }
+        const fields = {
+            minutes: parseCronField(pieces[0], 0, 59),
+            hours: parseCronField(pieces[1], 0, 23),
+            days: parseCronField(pieces[2], 1, 31),
+            months: parseCronField(pieces[3], 1, 12),
+            weekdays: parseCronField(pieces[4], 0, 7)
+        };
+        if (fields.weekdays) {
+            if (fields.weekdays.has(7)) {
+                fields.weekdays.add(0);
+                fields.weekdays.delete(7);
+            }
+        }
+        if (Object.values(fields).some((value) => !value)) {
+            cronResults.innerHTML = `<div class="hint">${t('cronInvalid')}</div>`;
+            return;
+        }
+        const matches = [];
+        const cursor = new Date(Date.now() + 60000);
+        cursor.setSeconds(0, 0);
+        for (let index = 0; index < 525600 && matches.length < 10; index += 1) {
+            if (cronMatches(cursor, fields, timezoneSelect.value)) matches.push(new Date(cursor));
+            cursor.setMinutes(cursor.getMinutes() + 1);
+        }
+        if (!matches.length) {
+            cronResults.innerHTML = `<div class="hint">${t('cronNoRuns')}</div>`;
+            return;
+        }
+        matches.forEach((date) => {
+            const item = document.createElement('div');
+            item.className = 'compact-item';
+            item.textContent = `${formatInTimeZone(date, timezoneSelect.value, { timeZoneName: 'short' })} | ${date.toISOString()}`;
+            cronResults.appendChild(item);
+        });
+    }
+
+    function loadFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const value = params.get('t') || (window.location.hash && !window.location.hash.includes('-') ? window.location.hash.slice(1) : '');
+        if (!value) return false;
+        smartInput.value = value;
+        updateFromSmartInput();
+        return true;
+    }
+
     smartInput.addEventListener('input', updateFromSmartInput);
     dateInput.addEventListener('input', updateFromDateInput);
     timezoneSelect.addEventListener('change', () => {
         dateInput.value = toDatetimeLocal(activeDate, timezoneSelect.value);
         renderResults(activeDate);
+        renderBatch();
+        renderDiff();
+        previewCron();
         if (lastDetectedKey === 'selectedDate') updateFromDateInput();
     });
     document.getElementById('useNowBtn').addEventListener('click', useNow);
@@ -751,6 +1142,10 @@
         renderResults(null);
         setStatus('');
     });
+    document.getElementById('batchConvertBtn').addEventListener('click', renderBatch);
+    document.getElementById('copyBatchCsvBtn').addEventListener('click', () => copyText(batchCsv || ''));
+    document.getElementById('diffBtn').addEventListener('click', renderDiff);
+    document.getElementById('cronBtn').addEventListener('click', previewCron);
     document.querySelectorAll('[data-example]').forEach((button) => {
         button.addEventListener('click', () => {
             smartInput.value = button.dataset.example;
@@ -765,7 +1160,12 @@
     });
 
     applyLanguage(activeLang);
-    useNow();
+    if (!loadFromUrl()) useNow();
+    diffStart.value = toDatetimeLocal(new Date(Date.now() - 86400000), timezoneSelect.value);
+    diffEnd.value = toDatetimeLocal(activeDate, timezoneSelect.value);
+    renderBatch();
+    renderDiff();
+    previewCron();
     updateLiveTimestamp();
     setInterval(updateLiveTimestamp, 1000);
 </script>
